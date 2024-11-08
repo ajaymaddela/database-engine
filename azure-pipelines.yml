@@ -1,0 +1,25 @@
+---
+trigger:
+  - main 
+stages:
+  - stage: build
+    displayName: build code 
+    
+    jobs:
+      - job: build
+        displayName: build using maven 
+        pool: Default
+        
+        steps:
+          - task: Maven@4
+            inputs:
+              mavenPOMFile: 'pom.xml'
+              goals: 'clean package'
+          - task: CopyFiles@2
+            inputs:
+              contents: 'target/'
+              targetFolder: $(Build.ArtifactStagingDirectory)
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathToPublish: $(Build.ArtifactStagingDirectory)
+              artifactName: BuildOutputs
